@@ -12,6 +12,8 @@ export default class Bullet {
       x: posDelta.x / 2,
       y: posDelta.y / 2
     }
+    // eslint-disable-next-line no-console
+    this.radius = 20
   }
 
   destroy () {
