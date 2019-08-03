@@ -1,6 +1,6 @@
 import Bullet from './Bullet'
 import Particle from './Particle'
-import { rotatePoint, randomNumBetween } from './helpers'
+import { rotatePoint, randomNumBetween, easeOutQuad } from './helpers'
 
 export default class Ship {
   constructor (args) {
@@ -10,8 +10,8 @@ export default class Ship {
       y: 0
     }
     this.rotation = 0
-    this.rotationSpeed = 6
-    this.speed = 0.15
+    this.rotationSpeed = 7.5
+    this.speed = 0.2
     this.inertia = 0.99
     this.radius = 20
     this.lastShot = 0
@@ -35,7 +35,8 @@ export default class Ship {
         velocity: {
           x: randomNumBetween(-1.5, 1.5),
           y: randomNumBetween(-1.5, 1.5)
-        }
+        },
+        color: '#fff'
       })
       this.create(particle, 'particles')
     }
@@ -66,15 +67,42 @@ export default class Ship {
       velocity: {
         x: posDelta.x / randomNumBetween(3, 5),
         y: posDelta.y / randomNumBetween(3, 5)
-      }
+      },
+      color: '#4bd15d'
+
     })
     this.create(particle, 'particles')
   }
+  halt () {
+    console.log(this.velocity)
+    this.velocity.x = Math.round(Math.cos(this.velocity.x) * this.speed)
+    this.velocity.y = Math.round(Math.sin(this.velocity.x) * this.speed)
+    console.log(this.velocity)
 
+    // Halt glow
+    let posDelta = rotatePoint({x: 0, y: 0}, {x: 0, y: 0}, (this.rotation - 180) * Math.PI / 180)
+    const particle = new Particle({
+      lifeSpan: randomNumBetween(2, 4),
+      size: randomNumBetween(1, 3),
+      position: {
+        x: this.position.x + posDelta.x + randomNumBetween(-10, 10),
+        y: this.position.y + posDelta.y + randomNumBetween(-10, 10)
+      },
+      velocity: {
+        x: posDelta.x / randomNumBetween(1, 15),
+        y: posDelta.y / randomNumBetween(1, 15)
+      },
+      color: '#ff4060'
+    })
+    this.create(particle, 'particles')
+  }
   render (state) {
     // Controls
     if (state.keys.up) {
       this.accelerate(1)
+    }
+    if (state.keys.down) {
+      this.halt()
     }
     if (state.keys.left) {
       this.rotate('LEFT')

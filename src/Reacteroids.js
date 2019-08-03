@@ -10,7 +10,9 @@ const KEY = {
   A: 65,
   D: 68,
   W: 87,
-  SPACE: 32
+  SPACE: 32,
+  S: 83,
+  DOWN: 40
 }
 
 export class Reacteroids extends Component {
@@ -53,6 +55,7 @@ export class Reacteroids extends Component {
 
   handleKeys (value, e) {
     let keys = this.state.keys
+    if (e.keyCode === KEY.DOWN || e.keyCode === KEY.S) keys.down = value
     if (e.keyCode === KEY.LEFT || e.keyCode === KEY.A) keys.left = value
     if (e.keyCode === KEY.RIGHT || e.keyCode === KEY.D) keys.right = value
     if (e.keyCode === KEY.UP || e.keyCode === KEY.W) keys.up = value
@@ -263,7 +266,8 @@ export class Reacteroids extends Component {
         <span className='score current-score' >Score: {this.state.currentScore}</span>
         <span className='score top-score' >Top Score: {this.state.topScore}</span>
         <span className='controls' >
-          Use [A][S][W][D] or [←][↑][↓][→] to MOVE<br />
+          Use [A][W][D] or [←][↑][→] to MOVE <br />
+          Use [S] or [↓]to HALT<br />
           Use [SPACE] to SHOOT
         </span>
         <canvas ref='canvas'

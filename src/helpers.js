@@ -44,3 +44,8 @@ export function randomNumBetweenExcluding (min, max, exMin, exMax) {
   }
   return random
 }
+/*
+ * Easing Functions - inspired from http://gizma.com/easing/
+ *  // decelerating to zero velocity
+ */
+export function easeOutQuad (t) { return (--t)*t*t+1 }
