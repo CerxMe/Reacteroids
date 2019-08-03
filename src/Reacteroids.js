@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Ship from './Ship'
 import Asteroid from './Asteroid'
-import { randomNumBetweenExcluding } from './helpers'
+import { randomNumBetween, randomNumBetweenExcluding } from './helpers'
 
 const KEY = {
   LEFT: 37,
@@ -134,8 +134,8 @@ export class Reacteroids extends Component {
 
     let ship = new Ship({
       position: {
-        x: randomNumBetweenExcluding(0, this.state.screen.width, this.state.screen.width / 2 - 60, this.state.screen.width / 2 + 60),
-        y: randomNumBetweenExcluding(0, this.state.screen.height, this.state.screen.height / 2 - 60, this.state.screen.height / 2 + 60)
+        x: randomNumBetweenExcluding(0, this.state.screen.width, this.state.screen.width / 2 - 160, this.state.screen.width / 2 + 160),
+        y: randomNumBetweenExcluding(0, this.state.screen.height, this.state.screen.height / 2 - 160, this.state.screen.height / 2 + 160)
       },
       create: this.createObject.bind(this),
       onDie: this.gameOver.bind(this)
@@ -181,7 +181,11 @@ export class Reacteroids extends Component {
 
   generateAsteroid () {
     let asteroid = new Asteroid({
-      size: 500,
+      size: 300,
+      velocity: {
+        x: 0,
+        y: 0
+      },
       position: {
         x: this.state.screen.width / 2,
         y: this.state.screen.height / 2

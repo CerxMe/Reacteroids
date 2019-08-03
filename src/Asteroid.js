@@ -7,23 +7,36 @@ export default class Asteroid {
   /*  this.velocity = {
       x: randomNumBetween(-1.5, 1.5),
       y: randomNumBetween(-1.5, 1.5)
-    }*/
-    this.velocity = { x: 0, y: 0 }
+    } */
+    this.velocity = args.velocity
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-1, 1)
     this.radius = args.size
     this.score = (1000 / this.radius) * 5
     this.create = args.create
     this.addScore = args.addScore
-    this.vertices = asteroidVertices(args.size/16*8, args.size)
+    this.vertices = asteroidVertices(args.size / 16 * 8, args.size)
   }
+  /* constructor (args) {
+    this.asteroid = args
+    this.asteroid.velocity = { x: 0, y: 0 }
+    this.asteroid.rotation = 0
+    this.asteroid.rotationSpeed = randomNumBetween(-0.5, 0.5)
+    this.asteroid.radius = args.size
+    this.asteroid.score = (1000 / this.radius) * 5
+    this.asteroid.create = args.create
+    this.asteroid.addScore = args.addScore
+    this.asteroid.vertices = asteroidVertices(args.size/16*8, args.size)
+  } */
+  split() {
 
+  }
   destroy () {
-    this.delete = true
+    /// this.delete = true
     this.addScore(this.score)
 
     // Explode
-    for (let i = 0; i < this.radius; i++) {
+    for (let i = 0; i < this.radius/50; i++) {
       const particle = new Particle({
         lifeSpan: randomNumBetween(60, 100),
         size: randomNumBetween(1, 3),
@@ -43,7 +56,10 @@ export default class Asteroid {
     if (this.radius > 10) {
       for (let i = 0; i < 2; i++) {
         let asteroid = new Asteroid({
-
+          velocity: {
+            x: randomNumBetween(-1.5, 1.5),
+            y: randomNumBetween(-1.5, 1.5)
+          },
           size: this.radius / 2,
           position: {
             x: randomNumBetween(-10, 20) + this.position.x,
@@ -54,6 +70,8 @@ export default class Asteroid {
         })
         this.create(asteroid, 'asteroids')
       }
+    } else {
+      this.delete = true
     }
   }
 

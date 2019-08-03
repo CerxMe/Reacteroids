@@ -1,13 +1,15 @@
 import { rotatePoint } from './helpers'
+import { asteroidVertices, randomNumBetween } from './helpers'
 
 export default class Bullet {
   constructor (args) {
+    //this.handleHitRegister = this.handleHitRegister.bind(this)
     let posDelta = rotatePoint({x: 0, y: -20}, {x: 0, y: 0}, args.ship.rotation * Math.PI / 180)
     this.position = {
       x: args.ship.position.x + posDelta.x,
       y: args.ship.position.y + posDelta.y
     }
-    this.rotation = args.ship.rotation
+    this.rotation = randomNumBetween(args.ship.rotation - 6, args.ship.rotation + 6)
     this.velocity = {
       x: posDelta.x / 2,
       y: posDelta.y / 2
@@ -17,6 +19,7 @@ export default class Bullet {
   }
 
   destroy () {
+    //this.handleHitRegister(this)
     this.delete = true
   }
 
