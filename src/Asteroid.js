@@ -12,10 +12,12 @@ export default class Asteroid {
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-1, 1)
     this.radius = args.size
-    this.score = (1000 / this.radius) * 5
+    this.score = (10 * this.radius) * 5
     this.create = args.create
     this.addScore = args.addScore
     this.vertices = asteroidVertices(args.size / 16 * 8, args.size)
+    this.gametype = args.gametype
+    this.delete = false
   }
   /* constructor (args) {
     this.asteroid = args
@@ -28,15 +30,13 @@ export default class Asteroid {
     this.asteroid.addScore = args.addScore
     this.asteroid.vertices = asteroidVertices(args.size/16*8, args.size)
   } */
-  split() {
+  split () {
 
   }
   destroy () {
-    /// this.delete = true
     this.addScore(this.score)
-
     // Explode
-    for (let i = 0; i < this.radius/50; i++) {
+    for (let i = 0; i < this.radius / 50; i++) {
       const particle = new Particle({
         lifeSpan: randomNumBetween(60, 100),
         size: randomNumBetween(1, 3),
@@ -52,26 +52,30 @@ export default class Asteroid {
       this.create(particle, 'particles')
     }
 
-    // Break into smaller asteroids
-    if (this.radius > 10) {
-      for (let i = 0; i < 2; i++) {
+    if(this.gametype === 'Debree'){
+      this.delete = true
+    }
+
+    // Spawn debree on hit
+    if (this.gametype === 'One' || (this.radius > 10 && this.gametype === 'Debree')) {
+      for (let i = 0; i < randomNumBetween(1, 4); i++) {
+
         let asteroid = new Asteroid({
           velocity: {
-            x: randomNumBetween(-1.5, 1.5),
-            y: randomNumBetween(-1.5, 1.5)
+            x: randomNumBetween(-1.9, 1.9),
+            y: randomNumBetween(-1.9, 1.9)
           },
-          size: this.radius / 2,
+          size: this.radius > 150 ? randomNumBetween(100, 160) : this.radius / 2,
           position: {
             x: randomNumBetween(-10, 20) + this.position.x,
             y: randomNumBetween(-10, 20) + this.position.y
           },
           create: this.create.bind(this),
-          addScore: this.addScore.bind(this)
+          addScore: this.addScore.bind(this),
+          gametype: 'Debree'
         })
         this.create(asteroid, 'asteroids')
       }
-    } else {
-      this.delete = true
     }
   }
 

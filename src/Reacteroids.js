@@ -93,13 +93,6 @@ export class Reacteroids extends Component {
     context.fillRect(0, 0, this.state.screen.width, this.state.screen.height)
     context.globalAlpha = 1
 
-    // Next set of asteroids
-    if (!this.asteroids.length) {
-      let count = this.state.asteroidCount + 1
-      this.setState({ asteroidCount: count })
-      this.generateAsteroid(count)
-    }
-
     // Check for colisions
     this.checkCollisionsWith(this.bullets, this.asteroids)
     this.checkCollisionsWith(this.ship, this.asteroids)
@@ -161,7 +154,7 @@ export class Reacteroids extends Component {
       localStorage['topscore'] = this.state.currentScore
     }
   }
-
+/*
   generateAsteroids (howMany) {
     let asteroids = []
     let ship = this.ship[0]
@@ -178,7 +171,7 @@ export class Reacteroids extends Component {
       this.createObject(asteroid, 'asteroids')
     }
   }
-
+*/
   generateAsteroid () {
     let asteroid = new Asteroid({
       size: 300,
@@ -191,7 +184,8 @@ export class Reacteroids extends Component {
         y: this.state.screen.height / 2
       },
       create: this.createObject.bind(this),
-      addScore: this.addScore.bind(this)
+      addScore: this.addScore.bind(this),
+      gametype: 'One'
     })
     this.createObject(asteroid, 'asteroids')
   }
