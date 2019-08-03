@@ -21,9 +21,6 @@ canvas {
 .current-score {
   left: 20px;
 }
-.top-score {
-  right: 20px;
-}
 .score {
   display: block;
   position: absolute;
@@ -35,8 +32,7 @@ canvas {
   display: block;
   position: absolute;
   top: 15px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  right: 20px;
   z-index: 1;
   font-size: 11px;
   text-align: center;

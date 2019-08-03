@@ -17,6 +17,7 @@ export default class Asteroid {
     this.addScore = args.addScore
     this.vertices = asteroidVertices(args.size / 16 * 8, args.size)
     this.gametype = args.gametype
+    this.name = 'Asteroid'
     this.delete = false
   }
   /* constructor (args) {

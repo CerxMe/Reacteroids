@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Ship from './Ship'
 import Asteroid from './Asteroid'
 import { randomNumBetween, randomNumBetweenExcluding } from './helpers'
+import hitReg from './hitReg'
 
 const KEY = {
   LEFT: 37,
@@ -32,7 +33,6 @@ export class Reacteroids extends Component {
         down: 0,
         space: 0
       },
-      asteroidCount: 3,
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
       inGame: false
@@ -135,7 +135,7 @@ export class Reacteroids extends Component {
       },
       create: this.createObject.bind(this),
       onDie: this.gameOver.bind(this)
-    })
+    }, this)
     this.createObject(ship, 'ship')
 
     // Make asteroids
@@ -218,6 +218,7 @@ export class Reacteroids extends Component {
         var item1 = items1[a]
         var item2 = items2[b]
         if (this.checkCollision(item1, item2)) {
+          new hitReg(item1, item2, {create: this.createObject.bind(this)}).default()
           item1.destroy()
           item2.destroy()
         }
@@ -264,10 +265,9 @@ export class Reacteroids extends Component {
       <div>
         { endgame }
         <span className='score current-score' >Score: {this.state.currentScore}</span>
-        <span className='score top-score' >Top Score: {this.state.topScore}</span>
         <span className='controls' >
           Use [A][W][D] or [←][↑][→] to MOVE <br />
-          Use [S] or [↓]to HALT<br />
+          Use [S] or [↓] to HALT<br />
           Use [SPACE] to SHOOT
         </span>
         <canvas ref='canvas'

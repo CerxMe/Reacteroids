@@ -16,6 +16,8 @@ export default class Bullet {
     }
     // eslint-disable-next-line no-console
     this.radius = 20
+    this.name = 'Bullet'
+    this.game = args.ship.game
   }
 
   destroy () {

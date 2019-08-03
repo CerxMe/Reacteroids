@@ -3,7 +3,8 @@ import Particle from './Particle'
 import { rotatePoint, randomNumBetween, easeOutQuad } from './helpers'
 
 export default class Ship {
-  constructor (args) {
+  constructor (args, game) {
+    this.game = game
     this.position = args.position
     this.velocity = {
       x: 0,
@@ -17,6 +18,8 @@ export default class Ship {
     this.lastShot = 0
     this.create = args.create
     this.onDie = args.onDie
+    this.name = 'Ship'
+    console.log(this.game)
   }
 
   destroy () {
@@ -74,10 +77,8 @@ export default class Ship {
     this.create(particle, 'particles')
   }
   halt () {
-    console.log(this.velocity)
     this.velocity.x = Math.round(Math.cos(this.velocity.x) * this.speed)
     this.velocity.y = Math.round(Math.sin(this.velocity.x) * this.speed)
-    console.log(this.velocity)
 
     // Halt glow
     let posDelta = rotatePoint({x: 0, y: 0}, {x: 0, y: 0}, (this.rotation - 180) * Math.PI / 180)
