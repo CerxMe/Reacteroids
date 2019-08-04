@@ -11,7 +11,7 @@ export default class Asteroid {
     this.velocity = args.velocity
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-0.4, 0.4)
-    this.rotationSpeed = 0
+    this.rotationSpeed = 1
     this.radius = args.size
     this.score = (10 * this.radius) * 5
     this.create = args.create
@@ -40,17 +40,17 @@ export default class Asteroid {
     // Explode
     for (let i = 0; i < this.radius / 50; i++) {
       const particle = new Particle({
-        lifeSpan: randomNumBetween(60, 100),
-        size: randomNumBetween(1, 3),
+        lifeSpan: randomNumBetween(10, 16),
+        size: randomNumBetween(this.radius/16, this.radius/4),
         position: {
-          x: this.position.x + randomNumBetween(-this.radius / 4, this.radius / 4),
-          y: this.position.y + randomNumBetween(-this.radius / 4, this.radius / 4)
+          x: this.position.x + randomNumBetween(-this.radius / 7, this.radius / 7),
+          y: this.position.y + randomNumBetween(-this.radius / 7, this.radius / 7)
         },
         velocity: {
-          x: randomNumBetween(-1.5, 1.5),
-          y: randomNumBetween(-1.5, 1.5)
+          x: randomNumBetween((this.radius)*-1/20, this.radius/20),
+          y: randomNumBetween((this.radius)*-1/20, this.radius/20)
         },
-        color: '#ff4f3b'
+        color: '#ff4060'
       })
       this.create(particle, 'particles')
     }

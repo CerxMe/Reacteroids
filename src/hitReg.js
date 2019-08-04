@@ -21,14 +21,14 @@ export default class hitReg extends Component {
       for (let i = 0; i < 50; i++) {
         const particle = new Particle({
           lifeSpan: randomNumBetween(3, 10),
-          size: randomNumBetween(2, 6),
+          size: randomNumBetween(this.item2.radius / 40, this.item2.radius / 30),
           position: {
             x: bulletpos.x,
             y: bulletpos.y
           },
           velocity: {
-            x: randomNumBetween(-10, 10),
-            y: randomNumBetween(-10, 10)
+            x: randomNumBetween((this.item2.radius / 32) * -1, this.item2.radius / 32),
+            y: randomNumBetween((this.item2.radius / 32) * -1, this.item2.radius / 32)
           },
           color: '#ff4060'
         })
@@ -55,14 +55,15 @@ export default class hitReg extends Component {
           })
           this.create(particle, 'particles')
         }
-
+        console.log(this.item2.vertices)
+        // Get real position of verticies
         let hitpoints = this.item2.vertices.map(point => {
           let xVert = (point.x + (this.item2.position.x))
           let yVert = (point.y + (this.item2.position.y - this.item2.radius / 16 / 8))
           let rpoint = {x: xVert, y: yVert}
           const particle = new Particle({
             lifeSpan: randomNumBetween(2, 4),
-            size: randomNumBetween(30, 40),
+            size: randomNumBetween(this.item2.radius / 30, this.item2.radius / 16),
             position: {
               x: rpoint.x,
               y: rpoint.y
@@ -74,8 +75,27 @@ export default class hitReg extends Component {
             color: '#ff4060'
           })
           this.create(particle, 'particles')
-          return rpoint
+          return { point, rpoint }
         })
+
+        // Chip away main asteroid
+        let verticies = []
+        hitpoints.forEach(({point, rpoint}) => {
+          // Select verticies within a radius of bullet hit
+          const hitRadius = 60
+          const shrinkPower = 45
+          // apply shrink
+          if (((rpoint.x - bulletpos.x < hitRadius) && (rpoint.x - bulletpos.x > -hitRadius)) &&
+              ((rpoint.y - bulletpos.y < hitRadius) && (rpoint.y - bulletpos.y > -hitRadius))) {
+          // console.log(`ofst: x${rpoint.x - bulletpos.x} y${rpoint.y - bulletpos.y}`)
+            point.x = point.x - randomNumBetween(-shrinkPower, 0)
+            point.y = point.y - randomNumBetween(-shrinkPower, 0)
+          }
+          // reconstruct verticies
+          verticies.push({ x: point.x, y: point.y })
+        })
+        console.log(verticies)
+        this.item2.vertices = verticies
 
         // Spawn debree on main hit
         for (let i = 0; i < randomNumBetween(1, 2); i++) {
@@ -95,7 +115,6 @@ export default class hitReg extends Component {
           })
           this.create(asteroid, 'asteroids')
         }
-
       }
     }
     return true
