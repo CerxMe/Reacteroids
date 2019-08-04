@@ -10,7 +10,8 @@ export default class Asteroid {
     } */
     this.velocity = args.velocity
     this.rotation = 0
-    this.rotationSpeed = randomNumBetween(-1, 1)
+    this.rotationSpeed = randomNumBetween(-0.4, 0.4)
+    this.rotationSpeed = 0
     this.radius = args.size
     this.score = (10 * this.radius) * 5
     this.create = args.create
@@ -49,7 +50,7 @@ export default class Asteroid {
           x: randomNumBetween(-1.5, 1.5),
           y: randomNumBetween(-1.5, 1.5)
         },
-        color: '#fff'
+        color: '#ff4f3b'
       })
       this.create(particle, 'particles')
     }
@@ -57,9 +58,9 @@ export default class Asteroid {
     if(this.gametype === 'Debree'){
       this.delete = true
     }
-
     // Spawn debree on hit
-    if (this.gametype === 'One' || (this.radius > 10 && this.gametype === 'Debree')) {
+
+    if (this.gametype !== 'One' && (this.radius > 10 && this.gametype === 'Debree')) {
       for (let i = 0; i < randomNumBetween(1, 4); i++) {
 
         let asteroid = new Asteroid({
@@ -80,7 +81,6 @@ export default class Asteroid {
       }
     }
   }
-
   render (state) {
     // Move
     this.position.x += this.velocity.x

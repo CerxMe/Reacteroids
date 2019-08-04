@@ -93,7 +93,7 @@ export default class Ship {
         x: posDelta.x / randomNumBetween(1, 15),
         y: posDelta.y / randomNumBetween(1, 15)
       },
-      color: '#ff4060'
+      color: '#12d163'
     })
     this.create(particle, 'particles')
   }
