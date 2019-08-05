@@ -83,7 +83,7 @@ export default class hitReg extends Component {
         hitpoints.forEach(({point, rpoint}) => {
           // Select verticies within a radius of bullet hit
           const hitRadius = 60
-          const shrinkPower = 45
+          const shrinkPower = 65
           // apply shrink
           if (((rpoint.x - bulletpos.x < hitRadius) && (rpoint.x - bulletpos.x > -hitRadius)) &&
               ((rpoint.y - bulletpos.y < hitRadius) && (rpoint.y - bulletpos.y > -hitRadius))) {
