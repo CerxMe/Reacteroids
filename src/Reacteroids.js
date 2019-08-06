@@ -3,6 +3,7 @@ import Ship from './Ship'
 import Asteroid from './Asteroid'
 import { randomNumBetween, randomNumBetweenExcluding } from './helpers'
 import hitReg from './hitReg'
+import DebugScreen from './debugScreen'
 
 const KEY = {
   LEFT: 37,
@@ -106,6 +107,11 @@ export class Reacteroids extends Component {
     this.updateObjects(this.bullets, 'bullets')
     this.updateObjects(this.ship, 'ship')
 
+    // Update asteroids
+    this.setState({
+      asteroids: this.asteroids
+    })
+
     context.restore()
 
     // Next frame
@@ -148,7 +154,6 @@ export class Reacteroids extends Component {
     this.setState({
       inGame: false
     })
-
     // Replace top score
     if (this.state.currentScore > this.state.topScore) {
       this.setState({
@@ -264,6 +269,7 @@ export class Reacteroids extends Component {
 
     return (
       <div>
+        <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
         { endgame }
         <span className='score current-score' >Score: {this.state.currentScore}</span>
         <span className='controls' >
@@ -271,6 +277,7 @@ export class Reacteroids extends Component {
           Use [S] or [↓] to HALT<br />
           Use [SPACE] to SHOOT
         </span>
+
         <canvas ref='canvas'
           width={this.state.screen.width * this.state.screen.ratio}
           height={this.state.screen.height * this.state.screen.ratio}

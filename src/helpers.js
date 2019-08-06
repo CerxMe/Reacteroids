@@ -16,6 +16,7 @@ export function asteroidVertices (count, rad) {
   }
   return p
 }
+
 /**
  * Rotate point around center on certain angle
  * @param {Object} p        {x: Number, y: Number}
@@ -49,3 +50,8 @@ export function randomNumBetweenExcluding (min, max, exMin, exMax) {
  *  // decelerating to zero velocity
  */
 export function easeOutQuad (t) { return (--t)*t*t+1 }
+
+/*
+ * is number negative
+ */
+export function isNegative (t) { return t < 0 }
