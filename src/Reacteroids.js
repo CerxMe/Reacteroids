@@ -36,7 +36,8 @@ export class Reacteroids extends Component {
       },
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
-      inGame: false
+      inGame: false,
+      asteroids: []
     }
     this.ship = []
     this.asteroids = []
@@ -109,7 +110,7 @@ export class Reacteroids extends Component {
 
     // Update asteroids
     this.setState({
-      asteroids: this.asteroids
+      asteroids: this.asteroids.length
     })
 
     context.restore()
