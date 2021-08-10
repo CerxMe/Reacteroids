@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css?family=Bungee+Hairline|Source+Code+Pro&display=swap&subset=latin-ext,vietnamese");
 body {
   padding: 0;
   margin: 0;
   font-family: 'Bungee Hairline', 'Source Code Pro', monospace, sans-serif;
   font-weight: 600;
+  color: #fff;
   color: #fff;
   background: #800080;
 }
