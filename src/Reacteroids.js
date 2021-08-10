@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import Ship from './Ship'
 import Asteroid from './Asteroid'
-import { asteroidVertices, randomNumBetween, randomNumBetweenExcluding } from './helpers'
+import { randomNumBetweenExcluding } from './helpers'
 import hitReg from './hitReg'
-import DebugScreen from './debugScreen'
 
 const KEY = {
   LEFT: 37,
@@ -87,8 +86,6 @@ export class Reacteroids extends Component {
 
   update () {
     const context = this.state.context
-    const keys = this.state.keys
-    const ship = this.ship[0]
 
     context.save()
     context.scale(this.state.screen.ratio, this.state.screen.ratio)
@@ -155,7 +152,7 @@ export class Reacteroids extends Component {
 
   startBoss(){
     // let them be summoned from the depths of hell
-    const boss = this.generateAsteroid()
+    this.generateAsteroid()
 
     // setTimeout(() => {
     //   boss.radius = 100

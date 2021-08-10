@@ -1,6 +1,6 @@
 import Bullet from './Bullet'
 import Particle from './Particle'
-import { rotatePoint, randomNumBetween, easeOutQuad } from './helpers'
+import { rotatePoint, randomNumBetween } from './helpers'
 
 export default class Ship {
   constructor (args, game) {
@@ -46,10 +46,10 @@ export default class Ship {
   }
 
   rotate (dir) {
-    if (dir == 'LEFT') {
+    if (dir === 'LEFT') {
       this.rotation -= this.rotationSpeed
     }
-    if (dir == 'RIGHT') {
+    if (dir === 'RIGHT') {
       this.rotation += this.rotationSpeed
     }
   }

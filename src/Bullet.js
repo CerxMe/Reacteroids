@@ -1,5 +1,5 @@
 import { rotatePoint } from './helpers'
-import { asteroidVertices, randomNumBetween } from './helpers'
+import { randomNumBetween } from './helpers'
 
 export default class Bullet {
   constructor (args) {

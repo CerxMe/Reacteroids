@@ -1,7 +1,6 @@
 import Particle from './Particle'
-import { randomNumBetween, isNegative, asteroidVertices } from './helpers'
-import React, { Component } from 'react'
-import Asteroid from './Asteroid'
+import { randomNumBetween } from './helpers'
+import { Component } from 'react'
 
 export default class hitReg extends Component {
   constructor (item1, item2, create) {
@@ -11,7 +10,6 @@ export default class hitReg extends Component {
     this.addScore = create.addScore
     this.item1 = item1
     this.item2 = item2
-    this.hitBox = 10
   }
   default () {
     if (this.item1.name === 'Bullet' && this.item2.name === 'Asteroid') {
@@ -88,12 +86,9 @@ export default class hitReg extends Component {
       })
 
       // impact particles
-      let verticies = []
       hitpoints.forEach(({point, rpoint}) => {
         // Select verticies within a radius of bullet hit
         const hitRadius = 65
-        const shrinkPower = 65
-        // apply shrink
         if ( ((rpoint.x - bulletpos.x < hitRadius) && (rpoint.x - bulletpos.x > -hitRadius)) &&
             ((rpoint.y - bulletpos.y < hitRadius) && (rpoint.y - bulletpos.y > -hitRadius)) ) {
 
