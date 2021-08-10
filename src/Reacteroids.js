@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Ship from './Ship'
 import Asteroid from './Asteroid'
-import { randomNumBetween, randomNumBetweenExcluding } from './helpers'
+import { asteroidVertices, randomNumBetween, randomNumBetweenExcluding } from './helpers'
 import hitReg from './hitReg'
 import DebugScreen from './debugScreen'
 
@@ -130,7 +130,8 @@ export class Reacteroids extends Component {
   startGame () {
     this.setState({
       inGame: true,
-      currentScore: 0
+      currentScore: 0,
+      bossHealth: 100
     })
 
     // Make ship
@@ -148,7 +149,16 @@ export class Reacteroids extends Component {
     // Make asteroids
     this.asteroids = []
     // this.generateAsteroids(this.state.asteroidCount)
-    this.generateAsteroid()
+    this.boss = this.startBoss()
+  }
+
+  startBoss(){
+    // let them be summoned from the depths of hell
+    const boss = this.generateAsteroid()
+    // setTimeout(() => {
+    //   boss.radius = 100
+    //   boss.vertices = asteroidVertices(boss.radius / 16 * 8, boss.radius)
+    // }, 100)
   }
 
   gameOver () {
@@ -183,7 +193,7 @@ export class Reacteroids extends Component {
 */
   generateAsteroid () {
     let asteroid = new Asteroid({
-      size: 300,
+      size: 200,
       velocity: {
         x: 0,
         y: 0
@@ -194,9 +204,10 @@ export class Reacteroids extends Component {
       },
       create: this.createObject.bind(this),
       addScore: this.addScore.bind(this),
-      gametype: 'One'
+      gametype: 'Boss'
     })
     this.createObject(asteroid, 'asteroids')
+    return asteroid
   }
 
   createObject (item, group) {
@@ -268,9 +279,11 @@ export class Reacteroids extends Component {
       )
     }
 
+
+// <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
     return (
       <div>
-        <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
+
         { endgame }
         <span className='score current-score' >Score: {this.state.currentScore}</span>
         <span className='controls' >

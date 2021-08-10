@@ -71,7 +71,7 @@ export default class Ship {
         x: posDelta.x / randomNumBetween(3, 5),
         y: posDelta.y / randomNumBetween(3, 5)
       },
-      color: '#4bd15d'
+      color: '#C0F8D1' //engine on
 
     })
     this.create(particle, 'particles')
@@ -93,13 +93,13 @@ export default class Ship {
         x: posDelta.x / randomNumBetween(1, 15),
         y: posDelta.y / randomNumBetween(1, 15)
       },
-      color: '#12d163'
+      color: '#BDCFB5'
     })
     this.create(particle, 'particles')
   }
   render (state) {
     // Controls
-    if (state.keys.up) {
+    if (state.keys.up && !state.keys.down) {
       this.accelerate(1)
     }
     if (state.keys.down) {

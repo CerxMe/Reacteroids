@@ -11,7 +11,6 @@ export default class Asteroid {
     this.velocity = args.velocity
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-0.4, 0.4)
-    this.rotationSpeed = 0
     this.radius = args.size
     this.score = (10 * this.radius) * 5
     this.create = args.create
@@ -19,6 +18,7 @@ export default class Asteroid {
     this.vertices = asteroidVertices(args.size / 16 * 8, args.size)
     this.gametype = args.gametype
     this.name = 'Asteroid'
+    this.stage = 5
     this.delete = false
   }
   /* constructor (args) {
@@ -38,46 +38,63 @@ export default class Asteroid {
   destroy () {
     this.addScore(this.score)
     // Explode
-    for (let i = 0; i < this.radius / 50; i++) {
+    for (let i = 0; i < 30; i++) {
       const particle = new Particle({
-        lifeSpan: randomNumBetween(10, 16),
-        size: randomNumBetween(this.radius/16, this.radius/4),
+        lifeSpan: randomNumBetween(60, 100),
+        size: randomNumBetween(1, 4),
         position: {
-          x: this.position.x + randomNumBetween(-this.radius / 7, this.radius / 7),
-          y: this.position.y + randomNumBetween(-this.radius / 7, this.radius / 7)
+          x: this.position.x + randomNumBetween(-this.radius / 2 , this.radius / 2),
+          y: this.position.y + randomNumBetween(-this.radius / 2 , this.radius / 2)
         },
         velocity: {
-          x: randomNumBetween((this.radius)*-1/20, this.radius/20),
-          y: randomNumBetween((this.radius)*-1/20, this.radius/20)
+          x: randomNumBetween(-1.5, 1.5),
+          y: randomNumBetween(-1.5, 1.5)
         },
-        color: '#ff4060'
+        color: '#fff'
       })
       this.create(particle, 'particles')
     }
 
+    // kill enemy
     if(this.gametype === 'Debree'){
       this.delete = true
+      this.maxHealth -= 1
     }
-    // Spawn debree on hit
 
-    if (this.gametype !== 'One' && (this.radius > 10 && this.gametype === 'Debree')) {
-      for (let i = 0; i < randomNumBetween(1, 4); i++) {
+    // decrease boss health
+    if (this.gametype === 'Boss') {
+      const shrinkPower = 10
+      const size = this.radius - shrinkPower
+      this.radius = size
+      // redraw asteroid
+      this.vertices = asteroidVertices(30, size)
+    }
 
-        let asteroid = new Asteroid({
-          velocity: {
-            x: randomNumBetween(-1.9, 1.9),
-            y: randomNumBetween(-1.9, 1.9)
-          },
-          size: this.radius > 150 ? randomNumBetween(100, 160) : this.radius / 2,
-          position: {
-            x: randomNumBetween(-10, 20) + this.position.x,
-            y: randomNumBetween(-10, 20) + this.position.y
-          },
-          create: this.create.bind(this),
-          addScore: this.addScore.bind(this),
-          gametype: 'Debree'
-        })
-        this.create(asteroid, 'asteroids')
+    // Spawn enemies on boss hit.
+    if (this.gametype !== 'Boss' && (this.radius > 10 && this.gametype === 'Debree')) {
+
+      // decrease health
+      const newSize = randomNumBetween(this.radius / 2, this.radius)
+
+      if(this.maxHealth - 1) {
+        for ( let i = 0; i < randomNumBetween(1, 3); i++ ) {
+          let asteroid = new Asteroid({
+            velocity: {
+              x: randomNumBetween(-1.9, 1.9),
+              y: randomNumBetween(-1.9, 1.9)
+            },
+            size: newSize > 50 ? newSize : 10,
+            position: {
+              x: randomNumBetween(-10, 20) + this.position.x,
+              y: randomNumBetween(-10, 20) + this.position.y
+            },
+            maxHealth: newSize > 50 ? this.maxHealth : 1,
+            create: this.create.bind(this),
+            addScore: this.addScore.bind(this),
+            gametype: 'Debree'
+          })
+          this.create(asteroid, 'asteroids')
+        }
       }
     }
   }
