@@ -13,7 +13,7 @@ export default class DebugScreen extends React.Component {
   toggleOpen(comp){
     let currentlyOpen = this.state.open
     currentlyOpen[comp] = !currentlyOpen[comp]
-    this.setState({    
+    this.setState({
         open: currentlyOpen
     })
 
@@ -25,9 +25,9 @@ export default class DebugScreen extends React.Component {
               <button onClick={() => this.toggleOpen('asteroidDrawer')}>Asteroids: {this.props.asteroids.length}</button>
             }
             { this.state.open.asteroidDrawer &&
-              this.props.asteroids.map((asteroid, i) => <p key={`Asteroid${i}`}>{asteroid.gametype}: x{Math.round(asteroid.position.x)} y{Math.round(asteroid.position.y)}</p>)
+              this.props.asteroids.map((asteroid, i) => <p key={`Asteroid${i}`}>{asteroid.gametype}#{asteroid.stage}: x{Math.round(asteroid.position.x)} y{Math.round(asteroid.position.y)}</p>)
             }
-            
+
             <button onClick={() => this.toggleOpen('bulletsDrawer')}>Bullets: {this.props.bullets.length}</button>
             {this.state.open.bulletsDrawer &&
                 this.props.bullets.map((bullet, i) => <p key={`Bullet${i}`}>{bullet.name}: x{Math.round(bullet.position.x)} y{Math.round(bullet.position.y)}</p>)

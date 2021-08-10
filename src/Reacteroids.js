@@ -93,7 +93,7 @@ export class Reacteroids extends Component {
     context.scale(this.state.screen.ratio, this.state.screen.ratio)
 
     // Motion trail
-    context.fillStyle = '#000'
+    context.fillStyle = '#000' // BACKGROUND COLOR
     context.globalAlpha = 0.4
     context.fillRect(0, 0, this.state.screen.width, this.state.screen.height)
     context.globalAlpha = 1
@@ -235,10 +235,10 @@ export class Reacteroids extends Component {
         var item1 = items1[a]
         var item2 = items2[b]
         if (this.checkCollision(item1, item2)) {
-          new hitReg(item1, item2, {create: this.createObject.bind(this),
+          const bulletpos = new hitReg(item1, item2, {create: this.createObject.bind(this),
             addScore: this.addScore.bind(this)}).default()
-          item1.destroy()
-          item2.destroy()
+          item1.destroy() // kill bullet
+          item2.destroy(bulletpos) // kill asteroid
         }
       }
     }
@@ -280,10 +280,9 @@ export class Reacteroids extends Component {
     }
 
 
-// <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
+//        <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
     return (
       <div>
-
         { endgame }
         <span className='score current-score' >Score: {this.state.currentScore}</span>
         <span className='controls' >

@@ -108,6 +108,7 @@ export default class hitReg extends Component {
       //   })
       //   this.create(asteroid, 'asteroids')
       // }
+      return bulletpos
     }
     return true
   }
