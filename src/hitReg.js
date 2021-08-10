@@ -61,7 +61,6 @@ export default class hitReg extends Component {
           },
           color: darkerColor
         })
-        console.log(lighterColor)
         this.create(bigParticle, 'particles')
 
         const smallParticle = new Particle({

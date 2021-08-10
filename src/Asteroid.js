@@ -14,6 +14,7 @@ export default class Asteroid {
     this.radius = args.size
     this.create = args.create
     this.addScore = args.addScore
+    this.onDie = args.onDie || null
     this.vertices = args.vertices || asteroidVertices(args.size / 16 * 8, args.size)
     this.gametype = args.gametype
     this.name = 'Asteroid'
@@ -21,6 +22,7 @@ export default class Asteroid {
     this.color = args.color || '#FFF'
     this.delete = false
     this.score = args.score || 100
+
 
   }
   /* constructor (args) {
@@ -133,15 +135,23 @@ export default class Asteroid {
 
     // decrease boss health
     if (this.gametype === 'Boss') {
-      const shrinkPower = 25
+      const shrinkPower = 15
       const size = this.radius - shrinkPower
-      this.radius = size
-      // redraw asteroid
-      this.vertices = asteroidVertices(size / 16 * 8, size)
-      this.color = '#ff15ff' //hitcolor
-      setTimeout(() => {
-        this.color = '#fff'
-      }, 200)
+
+      if (size > 15) {
+        this.radius = size
+        // redraw asteroid
+        this.vertices = asteroidVertices(size / 16 * 8, size)
+        this.color = '#ff15ff' //hitcolor
+        setTimeout(() => {
+          this.color = '#fff'
+        }, 200)
+      } else {
+        this.delete = true
+        // trigger win condition
+        this.onDie(true)
+        return
+      }
     }
     this.split(hitPosition)
   }
