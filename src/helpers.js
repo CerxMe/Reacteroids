@@ -6,7 +6,8 @@
  * @param  {Number} rad     Maximal radius of polygon
  * @return {Array}        Array of vertices: {x: Number, y: Number}
  */
-export function asteroidVertices (count, rad) {
+export function asteroidVertices (number, rad) {
+  const count = Math.floor(number)
   let p = []
   for (let i = 0; i < count; i++) {
     p[i] = {

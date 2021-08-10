@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Ship from './Ship'
 import Asteroid from './Asteroid'
-import { randomNumBetween, randomNumBetweenExcluding } from './helpers'
+import { asteroidVertices, randomNumBetween, randomNumBetweenExcluding } from './helpers'
 import hitReg from './hitReg'
 import DebugScreen from './debugScreen'
 
@@ -36,7 +36,8 @@ export class Reacteroids extends Component {
       },
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
-      inGame: false
+      inGame: false,
+      asteroids: []
     }
     this.ship = []
     this.asteroids = []
@@ -92,7 +93,7 @@ export class Reacteroids extends Component {
     context.scale(this.state.screen.ratio, this.state.screen.ratio)
 
     // Motion trail
-    context.fillStyle = '#000'
+    context.fillStyle = '#000' // BACKGROUND COLOR
     context.globalAlpha = 0.4
     context.fillRect(0, 0, this.state.screen.width, this.state.screen.height)
     context.globalAlpha = 1
@@ -109,7 +110,7 @@ export class Reacteroids extends Component {
 
     // Update asteroids
     this.setState({
-      asteroids: this.asteroids
+      asteroids: this.asteroids.length
     })
 
     context.restore()
@@ -129,7 +130,8 @@ export class Reacteroids extends Component {
   startGame () {
     this.setState({
       inGame: true,
-      currentScore: 0
+      currentScore: 0,
+      bossHealth: 100
     })
 
     // Make ship
@@ -147,7 +149,16 @@ export class Reacteroids extends Component {
     // Make asteroids
     this.asteroids = []
     // this.generateAsteroids(this.state.asteroidCount)
-    this.generateAsteroid()
+    this.boss = this.startBoss()
+  }
+
+  startBoss(){
+    // let them be summoned from the depths of hell
+    const boss = this.generateAsteroid()
+    // setTimeout(() => {
+    //   boss.radius = 100
+    //   boss.vertices = asteroidVertices(boss.radius / 16 * 8, boss.radius)
+    // }, 100)
   }
 
   gameOver () {
@@ -182,7 +193,7 @@ export class Reacteroids extends Component {
 */
   generateAsteroid () {
     let asteroid = new Asteroid({
-      size: 300,
+      size: 200,
       velocity: {
         x: 0,
         y: 0
@@ -193,9 +204,10 @@ export class Reacteroids extends Component {
       },
       create: this.createObject.bind(this),
       addScore: this.addScore.bind(this),
-      gametype: 'One'
+      gametype: 'Boss'
     })
     this.createObject(asteroid, 'asteroids')
+    return asteroid
   }
 
   createObject (item, group) {
@@ -223,10 +235,10 @@ export class Reacteroids extends Component {
         var item1 = items1[a]
         var item2 = items2[b]
         if (this.checkCollision(item1, item2)) {
-          new hitReg(item1, item2, {create: this.createObject.bind(this),
+          const bulletpos = new hitReg(item1, item2, {create: this.createObject.bind(this),
             addScore: this.addScore.bind(this)}).default()
-          item1.destroy()
-          item2.destroy()
+          item1.destroy() // kill bullet
+          item2.destroy(bulletpos) // kill asteroid
         }
       }
     }
@@ -267,9 +279,10 @@ export class Reacteroids extends Component {
       )
     }
 
+
+//        <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
     return (
       <div>
-        <DebugScreen asteroids={this.asteroids} bullets={this.bullets}/>
         { endgame }
         <span className='score current-score' >Score: {this.state.currentScore}</span>
         <span className='controls' >

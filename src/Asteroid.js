@@ -11,14 +11,15 @@ export default class Asteroid {
     this.velocity = args.velocity
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-0.4, 0.4)
-    this.rotationSpeed = 0
     this.radius = args.size
     this.score = (10 * this.radius) * 5
     this.create = args.create
     this.addScore = args.addScore
-    this.vertices = asteroidVertices(args.size / 16 * 8, args.size)
+    this.vertices = args.vertices || asteroidVertices(args.size / 16 * 8, args.size)
     this.gametype = args.gametype
     this.name = 'Asteroid'
+    this.stage = args.stage || 4
+    this.color = args.color || '#FFF'
     this.delete = false
   }
   /* constructor (args) {
@@ -32,54 +33,110 @@ export default class Asteroid {
     this.asteroid.addScore = args.addScore
     this.asteroid.vertices = asteroidVertices(args.size/16*8, args.size)
   } */
-  split () {
+  getRandomColor() {
+    // https://www.schemecolor.com/rainbow-pastels-color-scheme.php
+    const rainbow = [
+      '#FF9AA2', // Light Salmon Pink
+      '#FFB7B2', // Melon
+      '#FFDAC1', // Very Pale Orange
+      '#E2F0CB', // Dirty White
+      '#B5EAD7', //  Magic Mint
+      '#C7CEEA', // Crayola's Periwinkle
+    ]
+    return rainbow[Math.floor((Math.random()*rainbow.length))]
+  }
+  split (spawnLocation) { // split 3 times from big boy
+    // spawn a big lump of rocks when you hit the boss
+
+    let newSize, numberofrocks, summonedStage, vertices
+    if (this.gametype === 'Boss') {
+      newSize = randomNumBetween(100, 120)
+      numberofrocks = randomNumBetween(1, 2)
+      summonedStage = 2
+      vertices = asteroidVertices(32, newSize)
+
+    } else {
+      spawnLocation = null // split from the middle when shooting smaller asteroids
+      switch (Math.floor(this.stage)) {
+        case 2:
+          newSize = randomNumBetween(55, 80)
+          numberofrocks = randomNumBetween(1, 2)
+          summonedStage = 1
+          vertices = asteroidVertices(randomNumBetween(13, 20), newSize)
+          break
+        case 1:
+          newSize = randomNumBetween(9, 25)
+          numberofrocks = randomNumBetween(1, 2)
+          vertices = asteroidVertices(randomNumBetween(4, 7), newSize)
+          summonedStage = 0
+          break
+        default:
+          numberofrocks = 0
+          return
+      }
+    }
+
+
+    // summon thee
+    console.log(numberofrocks)
+    for ( let i = 0; i < numberofrocks; i++ ) {
+      console.log('summon')
+      let asteroid = new Asteroid({
+        velocity: {
+          x: randomNumBetween(-1.9, 1.9),
+          y: randomNumBetween(-1.9, 1.9)
+        },
+        size: newSize > 50 ? newSize : 10,
+        position: {
+          x: (spawnLocation?.x || this.position.x) + randomNumBetween(-10, 20),
+          y: (spawnLocation?.y || this.position.y) + randomNumBetween(-10, 20)
+        },
+        maxHealth: newSize > 50 ? this.maxHealth : 1,
+        create: this.create.bind(this),
+        addScore: this.addScore.bind(this),
+        stage: summonedStage,
+        vertices: vertices || null,
+        color: this.getRandomColor(),
+        gametype: 'Debree'
+      })
+      this.create(asteroid, 'asteroids')
+    }
 
   }
-  destroy () {
+  destroy (hitPosition) {
     this.addScore(this.score)
     // Explode
-    for (let i = 0; i < this.radius / 50; i++) {
+    for (let i = 0; i < 30; i++) {
       const particle = new Particle({
-        lifeSpan: randomNumBetween(10, 16),
-        size: randomNumBetween(this.radius/16, this.radius/4),
+        lifeSpan: randomNumBetween(60, 100),
+        size: randomNumBetween(1, 4),
         position: {
-          x: this.position.x + randomNumBetween(-this.radius / 7, this.radius / 7),
-          y: this.position.y + randomNumBetween(-this.radius / 7, this.radius / 7)
+          x: this.position.x + randomNumBetween(-this.radius / 2 , this.radius / 2),
+          y: this.position.y + randomNumBetween(-this.radius / 2 , this.radius / 2)
         },
         velocity: {
-          x: randomNumBetween((this.radius)*-1/20, this.radius/20),
-          y: randomNumBetween((this.radius)*-1/20, this.radius/20)
+          x: randomNumBetween(-1.5, 1.5),
+          y: randomNumBetween(-1.5, 1.5)
         },
-        color: '#ff4060'
+        color: '#fff'
       })
       this.create(particle, 'particles')
     }
 
+    // kill enemy
     if(this.gametype === 'Debree'){
       this.delete = true
     }
-    // Spawn debree on hit
 
-    if (this.gametype !== 'One' && (this.radius > 10 && this.gametype === 'Debree')) {
-      for (let i = 0; i < randomNumBetween(1, 4); i++) {
-
-        let asteroid = new Asteroid({
-          velocity: {
-            x: randomNumBetween(-1.9, 1.9),
-            y: randomNumBetween(-1.9, 1.9)
-          },
-          size: this.radius > 150 ? randomNumBetween(100, 160) : this.radius / 2,
-          position: {
-            x: randomNumBetween(-10, 20) + this.position.x,
-            y: randomNumBetween(-10, 20) + this.position.y
-          },
-          create: this.create.bind(this),
-          addScore: this.addScore.bind(this),
-          gametype: 'Debree'
-        })
-        this.create(asteroid, 'asteroids')
-      }
+    // decrease boss health
+    if (this.gametype === 'Boss') {
+      const shrinkPower = 10
+      const size = this.radius - shrinkPower
+      this.radius = size
+      // redraw asteroid
+      this.vertices = asteroidVertices(size / 16 * 8, size)
     }
+    this.split(hitPosition)
   }
   render (state) {
     // Move
@@ -106,7 +163,7 @@ export default class Asteroid {
     context.save()
     context.translate(this.position.x, this.position.y)
     context.rotate(this.rotation * Math.PI / 180)
-    context.strokeStyle = '#FFF'
+    context.strokeStyle = this.color
     context.lineWidth = 2
     context.beginPath()
     context.moveTo(0, -this.radius)
