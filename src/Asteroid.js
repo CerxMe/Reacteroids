@@ -12,15 +12,18 @@ export default class Asteroid {
     this.rotation = 0
     this.rotationSpeed = randomNumBetween(-0.4, 0.4)
     this.radius = args.size
-    this.score = (10 * this.radius) * 5
     this.create = args.create
     this.addScore = args.addScore
+    this.onDie = args.onDie || null
     this.vertices = args.vertices || asteroidVertices(args.size / 16 * 8, args.size)
     this.gametype = args.gametype
     this.name = 'Asteroid'
     this.stage = args.stage || 4
     this.color = args.color || '#FFF'
     this.delete = false
+    this.score = args.score || 100
+
+
   }
   /* constructor (args) {
     this.asteroid = args
@@ -48,12 +51,13 @@ export default class Asteroid {
   split (spawnLocation) { // split 3 times from big boy
     // spawn a big lump of rocks when you hit the boss
 
-    let newSize, numberofrocks, summonedStage, vertices
+    let newSize, numberofrocks, summonedStage, vertices, score
     if (this.gametype === 'Boss') {
       newSize = randomNumBetween(100, 120)
       numberofrocks = randomNumBetween(1, 2)
       summonedStage = 2
       vertices = asteroidVertices(32, newSize)
+      score = 10
 
     } else {
       spawnLocation = null // split from the middle when shooting smaller asteroids
@@ -63,12 +67,14 @@ export default class Asteroid {
           numberofrocks = randomNumBetween(1, 2)
           summonedStage = 1
           vertices = asteroidVertices(randomNumBetween(13, 20), newSize)
+          score = 20
           break
         case 1:
           newSize = randomNumBetween(9, 25)
           numberofrocks = randomNumBetween(1, 2)
           vertices = asteroidVertices(randomNumBetween(4, 7), newSize)
           summonedStage = 0
+          score = 50
           break
         default:
           numberofrocks = 0
@@ -78,9 +84,7 @@ export default class Asteroid {
 
 
     // summon thee
-    console.log(numberofrocks)
     for ( let i = 0; i < numberofrocks; i++ ) {
-      console.log('summon')
       let asteroid = new Asteroid({
         velocity: {
           x: randomNumBetween(-1.9, 1.9),
@@ -97,6 +101,7 @@ export default class Asteroid {
         stage: summonedStage,
         vertices: vertices || null,
         color: this.getRandomColor(),
+        score: score,
         gametype: 'Debree'
       })
       this.create(asteroid, 'asteroids')
@@ -118,7 +123,7 @@ export default class Asteroid {
           x: randomNumBetween(-1.5, 1.5),
           y: randomNumBetween(-1.5, 1.5)
         },
-        color: '#fff'
+        color: this.color
       })
       this.create(particle, 'particles')
     }
@@ -130,11 +135,23 @@ export default class Asteroid {
 
     // decrease boss health
     if (this.gametype === 'Boss') {
-      const shrinkPower = 10
+      const shrinkPower = 15
       const size = this.radius - shrinkPower
-      this.radius = size
-      // redraw asteroid
-      this.vertices = asteroidVertices(size / 16 * 8, size)
+
+      if (size > 15) {
+        this.radius = size
+        // redraw asteroid
+        this.vertices = asteroidVertices(size / 16 * 8, size)
+        this.color = '#ff15ff' //hitcolor
+        setTimeout(() => {
+          this.color = '#fff'
+        }, 200)
+      } else {
+        this.delete = true
+        // trigger win condition
+        this.onDie(true)
+        return
+      }
     }
     this.split(hitPosition)
   }

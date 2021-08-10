@@ -19,8 +19,34 @@ export default class hitReg extends Component {
 
       // Hitreg explosion
 
+      // stole from stackoverflow https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+      /* eslint-disable max-len */
+      function shadeColor(color, percent) {
+
+        let R = parseInt(color.substring(1,3),16);
+        let G = parseInt(color.substring(3,5),16);
+        let B = parseInt(color.substring(5,7),16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R<255)?R:255;
+        G = (G<255)?G:255;
+        B = (B<255)?B:255;
+
+        const RR = ((R.toString(16).length===1)?"0"+R.toString(16):R.toString(16));
+        const GG = ((G.toString(16).length===1)?"0"+G.toString(16):G.toString(16));
+        const BB = ((B.toString(16).length===1)?"0"+B.toString(16):B.toString(16));
+
+        return "#"+RR+GG+BB;
+      }
+      /* eslint-disable max-len */
+
       // big explosion particles flying all over the place
-      const particleSpeed = this.item2.radius / 10  // TODO proper sizes of explosions
+      const particleSpeed = this.item2.radius / 16  // TODO proper sizes of explosions
+      const darkerColor = shadeColor(this.item2.color || '#B287A3', -40)
+      const lighterColor = shadeColor(this.item2.color || '#B287A3', 40)
       for (let i = 0; i < 22; i++) {
         const bigParticle = new Particle({
           lifeSpan: randomNumBetween(3, 10),
@@ -33,7 +59,7 @@ export default class hitReg extends Component {
             x: randomNumBetween((particleSpeed*4) * -1, particleSpeed*4),
             y: randomNumBetween((particleSpeed*4) * -1, particleSpeed*4)
           },
-          color: '#482728'
+          color: darkerColor
         })
         this.create(bigParticle, 'particles')
 
@@ -48,7 +74,7 @@ export default class hitReg extends Component {
             x: randomNumBetween((particleSpeed*2) * -1, particleSpeed*2),
             y: randomNumBetween((particleSpeed*2) * -1, particleSpeed*2)
           },
-          color: '#7E4E60'
+          color: lighterColor
         })
         this.create(smallParticle, 'particles')
       }
@@ -84,7 +110,7 @@ export default class hitReg extends Component {
               y: 0
             },
             //color: '#ff4060'
-            color: '#B287A3'
+            color: this.item2.color || '#B287A3'
           })
           this.create(particle, 'particles')
         }

@@ -37,6 +37,7 @@ export class Reacteroids extends Component {
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
       inGame: false,
+      gameWon: false,
       asteroids: []
     }
     this.ship = []
@@ -130,8 +131,8 @@ export class Reacteroids extends Component {
   startGame () {
     this.setState({
       inGame: true,
+      gameWon: false,
       currentScore: 0,
-      bossHealth: 100
     })
 
     // Make ship
@@ -155,22 +156,26 @@ export class Reacteroids extends Component {
   startBoss(){
     // let them be summoned from the depths of hell
     const boss = this.generateAsteroid()
+
     // setTimeout(() => {
     //   boss.radius = 100
     //   boss.vertices = asteroidVertices(boss.radius / 16 * 8, boss.radius)
     // }, 100)
   }
 
-  gameOver () {
-    this.setState({
-      inGame: false
-    })
-    // Replace top score
-    if (this.state.currentScore > this.state.topScore) {
+  gameOver (gameState) {
+    if(this.state.inGame) {
       this.setState({
-        topScore: this.state.currentScore
+        inGame: false,
+        gameWon: gameState || false
       })
-      localStorage['topscore'] = this.state.currentScore
+      // Replace top score
+      if ( this.state.currentScore > this.state.topScore ) {
+        this.setState({
+          topScore: this.state.currentScore
+        })
+        localStorage['topscore'] = this.state.currentScore
+      }
     }
   }
 /*
@@ -204,7 +209,8 @@ export class Reacteroids extends Component {
       },
       create: this.createObject.bind(this),
       addScore: this.addScore.bind(this),
-      gametype: 'Boss'
+      gametype: 'Boss',
+      onDie: this.gameOver.bind(this)
     })
     this.createObject(asteroid, 'asteroids')
     return asteroid
@@ -259,21 +265,33 @@ export class Reacteroids extends Component {
     let message
 
     if (this.state.currentScore <= 0) {
-      message = '0 points... So sad.'
+      message = '0 points...'
     } else if (this.state.currentScore >= this.state.topScore) {
       message = 'Top score with ' + this.state.currentScore + ' points. Woo!'
     } else {
-      message = this.state.currentScore + ' Points though :)'
+      message = this.state.currentScore + ' points.'
     }
 
     if (!this.state.inGame) {
       endgame = (
         <div className='endgame'>
-          <p>Game over, man!</p>
+          <p>Game over.</p>
           <p>{message}</p>
           <button
             onClick={this.startGame.bind(this)}>
             try again?
+          </button>
+        </div>
+      )
+    }
+    if (!this.state.inGame && this.state.gameWon) {
+      endgame = (
+        <div className='endgame'>
+          <p>You win!</p>
+          <p>{message}</p>
+          <button
+            onClick={this.startGame.bind(this)}>
+            play again?
           </button>
         </div>
       )
